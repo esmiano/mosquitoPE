@@ -28,9 +28,9 @@ export SRA=${WORK}/1-sra
 export FASTQ=${WORK}/2-fastq
 export FASTQC_PRE=${WORK}/3-fastqc/3.1-pre_trim
 export FASTQC_POST=${WORK}/3-fastqc/3.2-post_trim
-export TRIM=${WORK}/4-trimmed
-export ALIGN=${WORK}/5-aligned
-export QUANT=${WORK}/6-quantified
+export TRIM=${WORK}/4-trim
+export ALIGN=${WORK}/5-align
+export QUANT=${WORK}/6-quant
 export OUTPUT=${WORK}/7-output
 export REFERENCE=${WORK}/reference
 
@@ -79,7 +79,10 @@ fi
 # Strip AaegL5_ prefix from chromosome names in annotations if still present
 if grep -q '^AaegL5_' ${ANNOTATIONS}; then
     echo "Stripping AaegL5_ prefix from GTF chromosome names..."
-    sed -i 's/^AaegL5_//' ${ANNOTATIONS}
+    # Zsh version of sed command is used below
+    sed -i '' 's/^AaegL5_//' ${ANNOTATIONS}
+    # For bash, please use the following
+    # sed -i 's/^AaegL5_//' ${ANNOTATIONS}
 fi
  
 # Extract splice sites for splice-aware alignment

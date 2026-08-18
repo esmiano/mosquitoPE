@@ -47,7 +47,7 @@ for trm in ${TRIM}/SRR*.fastq.gz; do
          -o ${ALIGN}/${srr}_sorted.bam
 
         # Index used for some downstream tools
-        # TODO: Uncommend if needed
+        # TODO: Uncomment if needed
 		# samtools index ${ALIGN}/${srr}_sorted.bam
 
         # Remove original SAM file to save space
