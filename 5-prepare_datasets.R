@@ -7,9 +7,11 @@
 # 
 # Dependencies:
 #  - vroom (Loading in data)
+#  
 #  - tidyverse (Data manipulation)
+#  
 #  - stringr (String manipulation)
-#  - rstacklayer (Reading GFF3/GTF annotation files)
+#  
 
 #===============================================================================
 # CONFIGURATION & SETUP
@@ -73,7 +75,7 @@ count_data <- read.table(
 rownames(count_data) <- count_data[, 1]
 
 # Remove Geneid column so only numeric counts remain
-count_data <- select(count_data, -Geneid)
+count_data <- dplyr::select(count_data, -Geneid)
 
 # Extract just the SRR accession IDs from column names
 # Replace column names with accessions for readability
@@ -106,12 +108,6 @@ meta_parsed <- metadata %>%
     sex = ifelse(str_sub(library_name, 1, 1) == "F", "female", "male"),
     # Positions 2-3: Label timepoint
     timepoint = str_sub(library_name, 2, 3),
-    # For 12h samples, label as day or night, other samples labelled NA
-    daynight = case_when(
-        grepl("12D", library_name) ~ "day",
-        grepl("12N", library_name) ~ "night",
-        TRUE ~ "NA"
-    ),
     # Final position: Label replicate
     replicate = str_sub(library_name, -1, -1)
   )
@@ -121,7 +117,6 @@ meta_parsed <- metadata %>%
 sample_info <- data.frame(
     sex = factor(meta_parsed$sex),
     timepoint = factor(meta_parsed$timepoint),
-    daynight = factor(meta_parsed$daynight),
     replicate = factor(meta_parsed$replicate),
     row.names = meta_parsed$run_accession
 )
@@ -153,6 +148,8 @@ counts <- count_data[, rownames(sample_info)]
 #===============================================================================
 # GENE ANNOTATION
 #===============================================================================
+
+
 
 #===============================================================================
 # GENES OF INTEREST
@@ -240,9 +237,3 @@ goi_data <- genes_of_interest[genes_of_interest %in% rownames(count_data)]
 
 # Identify any missing genes of interest 
 goi_missing <- genes_of_interest[!genes_of_interest %in% goi_data]
-
-# Further subdivide datasets into receptor types
-goi_hygro_data      <- genes_of_interest[genes_of_interest %in% goi_hygro]
-goi_co2_data        <- genes_of_interest[genes_of_interest %in% goi_co2]
-goi_coreceptor_data <- genes_of_interest[genes_of_interest %in% goi_coreceptor]
-goi_voc_data        <- genes_of_interest[genes_of_interest %in% goi_voc]
