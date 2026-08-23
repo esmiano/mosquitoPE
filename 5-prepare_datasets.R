@@ -29,6 +29,10 @@ setwd(file.path(working_dir))
 # Configure annotations file name
 annotations <- "Adavi2024_annotations.gtf"
 
+# Configure paths to output directories
+results_dir <- file.path(working_dir, "7-output", "results")
+figures_dir <- file.path(working_dir, "7-output", "figures")
+
 # Load packages
 library(vroom)
 library(tidyverse)
@@ -36,11 +40,13 @@ library(tidyverse)
 # Create separate output directories for results and figures
 #   showWarnings set to FALSE to prevent warnings in case of pre-existing directory
 #   recursive set to TRUE to create parent directories, if necessary
-dir.create(file.path(working_dir, "7-output", "results"),
-    showWarnings = FALSE, recursive = TRUE)
+dir.create(file.path(results_dir), showWarnings = FALSE, recursive = TRUE)
 
-dir.create(file.path(working_dir, "7-output", "figures"),
-    showWarnings = FALSE, recursive = TRUE)
+dir.create(file.path(figures_dir, "ma_plots"),
+                     showWarnings = FALSE, recursive = TRUE)
+
+dir.create(file.path(figures_dir, "expression_plots"),
+                     showWarnings = FALSE, recursive = TRUE)
 
 #===============================================================================
 # COUNT DATA PREPARATION
