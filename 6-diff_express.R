@@ -125,8 +125,9 @@ for (i in 1:length(all_contrasts)) {
   res_wald_shrunken_df <- rbind(res_wald_shrunken_df, tmp_shrunken_df)
 }
 
-res_wald_df_ord <- res_wald_df[order(res_wald_df$padj), ]
-res_wald_shrunk_df_ord <- res_wald_shrunken_df[order(res_wald_shrunken_df), ]
+# Order results in orrder of padj value
+res_wald_df_ord <- arrange(res_wald_df, padj)
+res_wald_shrunk_df_ord <- arrange(res_wald_shrunken_df, padj)
 
 
 # Likelihood Ratio Test (LRT) -------------------------------------------------
@@ -144,10 +145,14 @@ dds_lrt <- dds
 design(dds_lrt) <- ~ sex + timepoint + sex:timepoint        # Full model design
 dds_lrt <- nbinomLRT(dds_lrt, reduced = ~ sex + timepoint)  # Refit with LRT
 
-# Extract and order LRT results
+# Extract LRT results
 res_lrt <- results(dds_lrt)
-res_lrt_ord <- res_lrt[order(res_lrt$padj), ]
-
+# Convert to data.frame
+res_lrt_ord_df <- as.data.frame(res_lrt) %>%
+  # Create Gene ID column
+  rownames_to_column("gene_id") %>%
+  # Order according to padj value
+  arrange(padj)
 
 # Interaction effect sizes -----------------------------------------------------
 
@@ -324,13 +329,67 @@ for (i in 1:length(all_contrasts)) {
 expression_dir <- file.path(figures_dir, "expression_plots")
 dir.create(expression_dir, showWarnings = FALSE, recursive = TRUE)
 
+# Colourblind-friendly palette
+colourblind_sex <- c("female" = "#E69F00", "male" = "#56B4E9")
 
+# Gene expression plotting function --------------------------------------------
+
+# Define plotting function
+plot_expression <- function(gene_name) {
+
+  # Extract normalised counts from DESeq object
+  gene_counts <- plotCounts(dds, gene = gene_name,
+                            intgroup = c("sex", "timepoint"),
+                            returnData = TRUE)
+
+  # Order timepoints
+  gene_counts$timepoint <- factor(gene_counts$timepoint,
+                                  levels = c("02", "12", "24", "48", "96"))
+
+  # Initialise ggplot object
+  p_view <- ggplot(gene_counts, aes(x = timepoint, y = count,
+                   colour = sex, group = sex)) +
+    stat_summary(geom = "line", fun = mean, aes(group = sex), linewidth = 0.8) +
+    stat_summary(fun.data = mean_se, geom = "errorbar", linewidth = 0.6, width = 0.2) +
+    stat_summary(geom = "point", fun = mean, size = 3) +
+
+    # Use colour-blind palette
+    scale_colour_manual(values = colourblind_sex) +
+    # Add axes and legend labels
+    labs(
+      title = gene_name,
+      x = "Hours post-emergence",
+      y = "Normalised counts",
+      colour = "Sex"
+    ) +
+    # Set theme
+    theme_classic()
+  
+  # View plot
+  print(p_view)
+  
+  # Remove title for plot
+  p_save <- plot + labs(title = NULL)
+
+  ggsave(paste0(gene_name, "_norm_expression.png"),
+         # Plot to save and path to output directory
+         plot = p_save, path = expression_dir,
+         # Plot dimensions
+         width = 6, height = 4, dpi =300)
+
+}
+
+# Apply plotting normalised gene expression plotting function to all genes
+lapply(goi_hygro, plot_expression)
+lapply(goi_co2, plot_expression)
+lapply(goi_coreceptor, plot_expression)
+lapply(goi_voc, plot_expression)
 
 #===============================================================================
 # NORMALISED COUNTS TABLES
 #===============================================================================
 
-# Full table -------------------------------------------------------------------
+# Full results -----------------------------------------------------------------
 
 # Retrieve normalised counts
 # normalized = TRUE adjusts for differences in sequencing depth between samples
@@ -339,14 +398,37 @@ norm_counts <- counts(dds, normalized = TRUE)
 # Convert to dataframe and add Gene ID column
 norm_counts_df <- as.data.frame(norm_counts) %>% rownames_to_column("gene_id")
 
-# Join results and normalised counts data.frames according to "gene_id"
-master_final <- left_join(res_wald_df_ord, norm_counts_df, by = "gene_id")
+# Extract LRT results columns
+lrt_cols <- res_lrt_ord_df %>%
+  dplyr::select(gene_id,
+                lrt_stat = stat,
+                lrt_pvalue = pvalue,
+                lrt_padj = padj)
+
+
+# Combine Wald results, LRT columns & normalised counts
+master_final <- res_wald_df_ord %>%
+  left_join(lrt_cols, by = "gene_id") %>%
+  left_join(norm_counts_df, by = "gene_id") %>%
+  # Rename Wald Test columns to be explicit
+  dplyr::rename(wald_stat = "stat", wald_pvalue = "pvalue", wald_padj = "padj") %>%
+  # Move contrast column to position after Gene ID
+  relocate(contrast, .after = gene_id)
 
 # Export CSV
 # row.names = FALSE revents duplication of the gene ID column
-write.csv(master_final, "DEG_results.csv", row.names = FALSE)
+write.csv(master_final, file.path(results_dir, "DEG_results.csv"), row.names = FALSE)
 
 # Genes of interest only -------------------------------------------------------
 
-goi_final <- filter(master_final, gene_id %in% genes_of_interest)
-write.csv(goi_final, file.path(working_dir, "GOI_results.csv"), row.names = FALSE)
+# Filter gor genes of interest
+goi_final <- filter(master_final, gene_id %in% genes_of_interest) %>%
+  # Arrange in order of Gene ID first, then contrast
+  arrange(gene_id, contrast)
+write.csv(goi_final, file.path(results_dir, "GOI_results.csv"),
+          row.names = FALSE)
+
+# Filter for significant (padj<=0.05) Wald Test contrasts
+sig_goi_final <- filter(goi_final, wald_padj<=0.05)
+write.csv(sig_goi_final, file.path(results_dir, "Sig_GOI_results.csv"),
+          row.names = FALSE)
