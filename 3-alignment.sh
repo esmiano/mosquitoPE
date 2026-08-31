@@ -1,14 +1,13 @@
 #!/bin/zsh
-
-# Script function: Align reads by mapping to reference genome
+#===============================================================================
+# QUANTIFICATION OF GENE EXPRESSION
+#===============================================================================
+# Author: esmiano
 # Version: 1.0
 # Date created: 09-AUG-2026
-#
-# Dependencies:
-#  - HISAT2 (building HISAT2 index for alignment to reference genome)
-#    https://github.com/DaehwanKimLab/hisat2
-#  - samtools (converting SAM files to sorted BAM files)
-#    https://github.com/samtools/samtools
+# 
+# Description:
+# This script aligns reads by mapping to a reference genome.
 
 #===============================================================================
 # CONFIGURATION

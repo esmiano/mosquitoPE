@@ -1,24 +1,21 @@
 #!/bin/zsh
-
-# Script function: Configure environmental variables for directories and
-#   reference genome files, ready for downstream analysis
+#===============================================================================
+# QUANTIFICATION OF GENE EXPRESSION
+#===============================================================================
+# Author: esmiano
 # Version: 1.0
 # Date created: 09-AUG-2026
-#
-# Dependencies:
-#  - sra-tools (downloading RNA-Seq data from the Sequence Read Archive (SRA))
-#    https://github.com/ncbi/sra-tools
-#  - wget (downloading reference genome, annotations, and sample metadata)
-#    https://github.com/rockdaboot/wget2
-#  - HISAT2 (building HISAT2 index for alignment to reference genome)
-#    https://github.com/DaehwanKimLab/hisat2
+# 
+# Description:
+# This script configures environmental variables for directories and reference 
+# genome files, ready for downstream analysis
 
 #===============================================================================
 # CONFIGURATION
 #===============================================================================
 
 # User must configure the path to the working directory, all other variables
-#   are configured automatically.
+# are configured automatically.
 
 # Configure working directory (requires user input)
 export WORK=/path/to/working/directory

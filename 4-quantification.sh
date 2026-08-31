@@ -1,12 +1,13 @@
 #!/bin/zsh
-
-# Script function: Quantify gene expression from aligned reads
+#===============================================================================
+# QUANTIFICATION OF GENE EXPRESSION
+#===============================================================================
+# Author: esmiano
 # Version: 1.0
 # Date created: 09-AUG-2026
-#
-# Dependencies:
-#  - featureCounts (quantifying gene expression)
-#    https://subread.sourceforge.net/
+# 
+# Description:
+# This script quantifies gene expression from aligned reads.
 
 #===============================================================================
 # CONFIGURATION

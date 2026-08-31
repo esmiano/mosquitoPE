@@ -1,17 +1,14 @@
 #!/bin/zsh
-
-# Script function: Pre-process and QC RNA-Seq data, ready for alignment and
-#   quantification
+#===============================================================================
+# RAW DATA PRE-PROCESSING AND QUALITY CONTROL
+#===============================================================================
+# Author: esmiano
 # Version: 1.0
 # Date created: 09-AUG-2026
-#
-# Dependencies:
-#  - sra-tools (converting SRA files to FASTQ format)
-#    https://github.com/ncbi/sra-tools
-#  - FastQC (QC of sequencing reads in FASTQ format)
-#    https://github.com/s-andrews/FastQC
-#  - fastp (trimming of low-quality reads and adapters)
-#    https://github.com/OpenGene/fastp
+# 
+# Description:
+# This script pre-processes and QCs raw RNA-Seq data, ready for alignment and
+# quantification.
 
 #===============================================================================
 # CONFIGURATION
