@@ -1,17 +1,14 @@
-
-# Script function: Importing gene expression counts, metadata, and gene
-#   annotations into R and preparing them for downstream analysis
-# Version: 2.0
+#===============================================================================
+# DATASET PREPARATION
+#===============================================================================
+# Author: esmiano
+# Version: 1.1
 # Date created: 09-AUG-2026
-# Date modified: 18-AUG-2026
+# Date modified: 
 # 
-# Dependencies:
-#  - vroom (Loading in data)
-#  
-#  - tidyverse (Data manipulation)
-#  
-#  - stringr (String manipulation)
-#  
+# Description:
+# This script imports gene expression counts, metadata, and gene annotations
+# into R and prepares them for downstream analysis.
 
 #===============================================================================
 # CONFIGURATION & SETUP
@@ -111,7 +108,7 @@ meta_parsed <- metadata %>%
   filter(grepl("H[0-9]$", library_name)) %>%
   mutate(
     # Position 1: If "F", then label as "female", else "male"
-    sex = ifelse(str_sub(library_name, 1, 1) == "F", "female", "male"),
+    sex = ifelse(str_sub(library_name, 1, 1) == "F", "Female", "Male"),
     # Positions 2-3: Label timepoint
     timepoint = str_sub(library_name, 2, 3),
     # Final position: Label replicate
@@ -228,10 +225,10 @@ genes_of_interest <- c(
 )
 
 # Define gene subsets
-goi_hygro <- c("Ir93a", "Ir40a", "Ir68a")
-goi_co2 <- c("Gr1", "Gr2", "Gr3")
-goi_coreceptor <- c("Orco", "Ir8a", "Ir25a", "Ir76b")
-goi_voc <- c("Ir21a", "Ir41a", "Ir41c", "Ir41j", "Ir75d", "Ir75g", "Ir75l", 
+hygroreceptors <- c("Ir93a", "Ir40a", "Ir68a")
+co2_receptors <- c("Gr1", "Gr2", "Gr3")
+coreceptors <- c("Orco", "Ir8a", "Ir25a", "Ir76b")
+voc_receptors <- c("Ir21a", "Ir41a", "Ir41c", "Ir41j", "Ir75d", "Ir75g", "Ir75l", 
     "Ir100a", "Ir101", "Ir161", "Or2", "Or4", "Or8", "Or10", "Or11", "Or23", 
     "Or28", "Or41", "Or47", "Or49", "Or52", "Or57", "Or59", "Or66", "Or69", 
     "Or70", "Or71", "Or72", "Or81", "Or82", "Or84", "Or87", "Or88", "Or91", 

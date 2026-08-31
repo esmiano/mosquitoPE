@@ -1,23 +1,13 @@
-
-# Script function: Differential Gene Expression analysis using DESeq2
+#===============================================================================
+# DIFFERENTIAL GENE EXPRESSION ANALYSIS
+#===============================================================================
+# Author: esmiano
 # Version: 1.0
 # Date created: 18-AUG-2026
 # 
-# Dependencies:
-#  - DESeq2 (Differential Gene Expression analysis)
-#    
-#  - ggplot2 (Plotting figures)
-#    
-#  - pheatmap (Plotting heatmaps)
-#    
-#  - RColorBrewer (Colour palettes)
-#    
-#  - ggrepel (Non-overlapping plot labels)
-#    
-#  - PoiClaClu (Poisson distance calculation)
-#    
-#  - ashr (LFC shrinkage for composite contrasts)
-#    
+# Description:
+# This script uses DESeq to identify Differentially Expressed Genes (DEGs) 
+# within the previously defined genes of interest.
 
 #===============================================================================
 # SETUP
@@ -54,8 +44,8 @@ dds$condition <- factor(paste0(dds$sex, "_", dds$timepoint))
 
 # Set level order explicitly
 dds$condition <- factor(dds$condition, levels = c(
-  "female_02", "female_12", "female_24", "female_48", "female_96",
-  "male_02",   "male_12",   "male_24",   "male_48",   "male_96"
+  "Female_02", "Female_12", "Female_24", "Female_48", "Female_96",
+  "Male_02",   "Male_12",   "Male_24",   "Male_48",   "Male_96"
 ))
 
 # Update model design
@@ -74,23 +64,23 @@ dds <- DESeq(dds)
 # Define contrasts
 all_contrasts <- list(
     # Sex effect at each timepoint (female used as reference)
-    list(label = "sex_at_02h", contrast = c("condition", "male_02", "female_02")),
-    list(label = "sex_at_12h", contrast = c("condition", "male_12", "female_12")),
-    list(label = "sex_at_24h", contrast = c("condition", "male_24", "female_24")),
-    list(label = "sex_at_48h", contrast = c("condition", "male_48", "female_48")),
-    list(label = "sex_at_96h", contrast = c("condition", "male_96", "female_96")),
+    list(label = "sex_at_02h", contrast = c("condition", "Male_02", "Female_02")),
+    list(label = "sex_at_12h", contrast = c("condition", "Male_12", "Female_12")),
+    list(label = "sex_at_24h", contrast = c("condition", "Male_24", "Female_24")),
+    list(label = "sex_at_48h", contrast = c("condition", "Male_48", "Female_48")),
+    list(label = "sex_at_96h", contrast = c("condition", "Male_96", "Female_96")),
 
     # Timepoint effect in females (female at 2hPE used as reference)
-    list(label = "female_12v02", contrast = c("condition", "female_12", "female_02")),
-    list(label = "female_24v02", contrast = c("condition", "female_24", "female_02")),
-    list(label = "female_48v02", contrast = c("condition", "female_48", "female_02")),
-    list(label = "female_96v02", contrast = c("condition", "female_96", "female_02")),
+    list(label = "female_12v02", contrast = c("condition", "Female_12", "Female_02")),
+    list(label = "female_24v02", contrast = c("condition", "Female_24", "Female_02")),
+    list(label = "female_48v02", contrast = c("condition", "Female_48", "Female_02")),
+    list(label = "female_96v02", contrast = c("condition", "Female_96", "Female_02")),
 
     # Timepoint effect in males (male 2hPE used as reference)
-    list(label = "male_12v02", contrast = c("condition", "male_12", "male_02")),
-    list(label = "male_24v02", contrast = c("condition", "male_24", "male_02")),
-    list(label = "male_48v02", contrast = c("condition", "male_48", "male_02")),
-    list(label = "male_96v02", contrast = c("condition", "male_96", "male_02"))
+    list(label = "male_12v02", contrast = c("condition", "Male_12", "Male_02")),
+    list(label = "male_24v02", contrast = c("condition", "Male_24", "Male_02")),
+    list(label = "male_48v02", contrast = c("condition", "Male_48", "Male_02")),
+    list(label = "male_96v02", contrast = c("condition", "Male_96", "Male_02"))
 )
 
 # Create empty results data.frames 
@@ -190,11 +180,11 @@ colourblind_timepoint <- c(
 )
 
 # PCA plot
-ggplot(pca_data, aes(x = PC1, y = PC2)) +
+p_pca <- ggplot(pca_data, aes(x = PC1, y = PC2)) +
   
   # Females (filled)
   geom_point(
-    data = subset(pca_data, sex == "female"),
+    data = subset(pca_data, sex == "Female"),
     aes(colour = timepoint, fill = timepoint, shape = replicate),
     size = 2.5,
     stroke = 1
@@ -202,7 +192,7 @@ ggplot(pca_data, aes(x = PC1, y = PC2)) +
   
   # Males (empty)
   geom_point(
-    data = subset(pca_data, sex == "male"),
+    data = subset(pca_data, sex == "Male"),
     aes(colour = timepoint, shape = replicate),
     fill = "white",
     size = 2.5,
@@ -254,13 +244,29 @@ ggplot(pca_data, aes(x = PC1, y = PC2)) +
   # Figure legen customisation
   labs(
     colour = "Timepoint",
-    fill = "Timepoint",
-    shape = "Replicate"
+    fill   = "Timepoint",
+    shape  = "Replicate"
   ) +
   
-  theme_classic()
+  theme_classic() +
+  
+  # Remove figure legend
+  theme(legend.position = "none")
 
-    
+# Save pca plot without a legend
+ggsave(
+    filename = "pca_after.png", plot = p_pca,
+    path = file.path(working_dir, "7-output", "figures"),
+    width = 8, height = 5, dpi = 300
+)
+
+# PCA plot with legend
+pca_with_legend <- p_pca + theme(legend.position = "bottom")
+
+# Save PCA legend separately
+ggsave("pca_legend.png", plot = ggdraw(get_legend(pca_with_legend)),
+       path = figures_dir, width = 7, height = 0.5, dpi = 300)
+
 #===============================================================================
 # SAMPLE DISTANCES
 #===============================================================================
@@ -329,61 +335,100 @@ for (i in 1:length(all_contrasts)) {
 expression_dir <- file.path(figures_dir, "expression_plots")
 dir.create(expression_dir, showWarnings = FALSE, recursive = TRUE)
 
+# Define position dodge
+dodge <- position_dodge(width=0.2)
+
 # Colourblind-friendly palette
-colourblind_sex <- c("female" = "#E69F00", "male" = "#56B4E9")
+colourblind_sex <- c("Female" = "#E69F00", "Male" = "#56B4E9")
 
-# Gene expression plotting function --------------------------------------------
+# Gene expression  -------------------------------------------------------------
 
-# Define plotting function
+# Define normalised gene expression plotting function
 plot_expression <- function(gene_name) {
 
-  # Extract normalised counts from DESeq object
+  # Extract normalised counts for gene from DESeq object
   gene_counts <- plotCounts(dds, gene = gene_name,
                             intgroup = c("sex", "timepoint"),
                             returnData = TRUE)
-
-  # Order timepoints
-  gene_counts$timepoint <- factor(gene_counts$timepoint,
-                                  levels = c("02", "12", "24", "48", "96"))
-
+  
   # Initialise ggplot object
-  p_view <- ggplot(gene_counts, aes(x = timepoint, y = count,
-                   colour = sex, group = sex)) +
-    stat_summary(geom = "line", fun = mean, aes(group = sex), linewidth = 0.8) +
-    stat_summary(fun.data = mean_se, geom = "errorbar", linewidth = 0.6, width = 0.2) +
-    stat_summary(geom = "point", fun = mean, size = 3) +
+  p <- ggplot(gene_counts, aes(x = timepoint, y = count,
+                                   colour = sex, group = sex)) +
+    
+    # Add line passing through mean values
+    stat_summary(
+      geom      = "line",
+      fun       = mean,
+      aes(group = sex),
+      linewidth = 0.6,
+      position  = dodge
+    ) +
+    
+    # Add standard error bar
+    stat_summary(
+      geom      = "errorbar",
+      fun.data  = mean_se,
+      linewidth = 0.5,
+      width     = 0.2,
+      position  = dodge
+    ) +
+    
+    # Add point for mean values
+    stat_summary(
+      geom      = "point",
+      fun       = mean,
+      aes(shape = sex),
+      size      = 3,
+      position  = dodge
+    ) +
 
-    # Use colour-blind palette
+    # Set colours and shapes + capitalise labels
     scale_colour_manual(values = colourblind_sex) +
-    # Add axes and legend labels
+    scale_shape_manual(values = c(19, 17)) +
+
+    # Add labels
     labs(
-      title = gene_name,
+      # Axes labels
       x = "Hours post-emergence",
       y = "Normalised counts",
-      colour = "Sex"
+      # Legend labels
+      colour = "Sex",
+      shape = "Sex"
     ) +
+    
+    # Remove through line in legend shapes
+    guides(color = guide_legend(override.aes = list(linetype = 0))) +
+    
     # Set theme
-    theme_classic()
-  
-  # View plot
-  print(p_view)
-  
-  # Remove title for plot
-  p_save <- plot + labs(title = NULL)
+    theme_classic() +
 
-  ggsave(paste0(gene_name, "_norm_expression.png"),
-         # Plot to save and path to output directory
-         plot = p_save, path = expression_dir,
-         # Plot dimensions
-         width = 6, height = 4, dpi =300)
-
+    # Remove figure legend
+    theme(legend.position = "none")
 }
 
-# Apply plotting normalised gene expression plotting function to all genes
-lapply(goi_hygro, plot_expression)
-lapply(goi_co2, plot_expression)
-lapply(goi_coreceptor, plot_expression)
-lapply(goi_voc, plot_expression)
+# Plot and save figures with no legend
+for (gene in no_legend) {
+  ggsave(paste0(gene, "_expression.png"),
+  # Plot to save and path to output directory
+  plot = plot_expression(gene), path = figures_dir,
+  # Plot dimensions
+  width = 6, height = 4, dpi =300)
+}
+
+# Generate plots without legends
+for (gene in c(hygroreceptors, co2_receptors)) {
+  p <- plot_expression(gene)
+  ggsave(paste0(gene, "_expression.png"), plot = plot_expression(gene),
+         path = figures_dir, width = 5, height = 4, dpi = 300)
+}
+
+# Plot with legend
+p_with_legend <- plot_expression("Ir93a") + theme(legend.position = "bottom")
+
+# Save legend separately
+ggsave("expression_legend.png", plot = ggdraw(get_legend(p_with_legend)),
+       path = figures_dir, width = 3, height = 0.5, dpi = 300)
+
 
 #===============================================================================
 # NORMALISED COUNTS TABLES
@@ -401,9 +446,9 @@ norm_counts_df <- as.data.frame(norm_counts) %>% rownames_to_column("gene_id")
 # Extract LRT results columns
 lrt_cols <- res_lrt_ord_df %>%
   dplyr::select(gene_id,
-                lrt_stat = stat,
+                lrt_stat   = stat,
                 lrt_pvalue = pvalue,
-                lrt_padj = padj)
+                lrt_padj   = padj)
 
 
 # Combine Wald results, LRT columns & normalised counts
@@ -429,6 +474,14 @@ write.csv(goi_final, file.path(results_dir, "GOI_results.csv"),
           row.names = FALSE)
 
 # Filter for significant (padj<=0.05) Wald Test contrasts
-sig_goi_final <- filter(goi_final, wald_padj<=0.05)
-write.csv(sig_goi_final, file.path(results_dir, "Sig_GOI_results.csv"),
+sig_wald_goi_final <- filter(goi_final, wald_padj<=0.05) %>%
+  dplyr::select(-lrt_stat, -lrt_pvalue, -lrt_padj)
+write.csv(sig_wald_goi_final, file.path(results_dir, "Sig_Wald_GOI_results.csv"),
+          row.names = FALSE)
+
+# Filter for significant (padj<=0.05) LRT genes
+sig_lrt_goi_final <- filter(goi_final, lrt_padj<=0.05) %>%
+  dplyr::select(-contrast, -log2FoldChange, -lfcSE, -wald_stat, -wald_pvalue, -wald_padj) %>%
+  distinct()
+write.csv(sig_lrt_goi_final, file.path(results_dir, "Sig_LRT_GOI_results.csv"),
           row.names = FALSE)

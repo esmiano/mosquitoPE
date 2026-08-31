@@ -1,18 +1,13 @@
-
-# Script function: Performing initial DESeq analysis, then removing potentially
-#   potentially mislabelled samples after QC
+#===============================================================================
+# SAMPLE REMOVAL
+#===============================================================================
+# Author: esmiano
 # Version: 1.0
 # Date created: 18-AUG-2026
 # 
-# Dependencies:
-#  - DESeq2 (Differential Gene Expression analysis)
-#    
-#  - ggplot2 (Plotting figures)
-#    
-#  - RColorBrewer (Colour palettes)
-#    
-#  - ggrepel (Non-overlapping plot labels)
-#    
+# Description:
+# This script performs initial DESeq analysis and QC, as well as removal of 
+# potentially mislabelled samples.
 
 #===============================================================================
 # SETUP
@@ -44,8 +39,8 @@ dds_og$condition <- factor(paste0(dds_og$sex, "_", dds_og$timepoint))
 
 # Set level order explicitly
 dds_og$condition <- factor(dds_og$condition, levels = c(
-  "female_02", "female_12", "female_24", "female_48", "female_96",
-  "male_02",   "male_12",   "male_24",   "male_48",   "male_96"
+  "Female_02", "Female_12", "Female_24", "Female_48", "Female_96",
+  "Male_02",   "Male_12",   "Male_24",   "Male_48",   "Male_96"
 ))
 
 # Update model design
@@ -92,7 +87,7 @@ ggplot(pca_data_og, aes(x = PC1, y = PC2)) +
   
   # Females (filled)
   geom_point(
-    data = subset(pca_data_og, sex == "female"),
+    data = subset(pca_data_og, sex == "Female"),
     aes(colour = timepoint, fill = timepoint, shape = replicate),
     size = 2.5,
     stroke = 1
@@ -100,7 +95,7 @@ ggplot(pca_data_og, aes(x = PC1, y = PC2)) +
   
   # Males (empty)
   geom_point(
-    data = subset(pca_data_og, sex == "male"),
+    data = subset(pca_data_og, sex == "Male"),
     aes(colour = timepoint, shape = replicate),
     fill = "white",
     size = 2.5,
@@ -156,11 +151,14 @@ ggplot(pca_data_og, aes(x = PC1, y = PC2)) +
     shape = "Replicate"
   ) +
   
-  theme_classic()
+  theme_classic() +
+  
+  # Remove figure legend
+  theme(legend.position = "none")
 
 # Save plot
 ggsave(
-    filename = "pca_mislabelled_samples.png",
+    filename = "pca_before.png",
     path = file.path(working_dir, "7-output", "figures"),
     width = 8, height = 5, dpi = 300
 )
