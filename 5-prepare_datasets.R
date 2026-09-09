@@ -42,8 +42,21 @@ dir.create(file.path(results_dir), showWarnings = FALSE, recursive = TRUE)
 dir.create(file.path(figures_dir, "ma_plots"),
                      showWarnings = FALSE, recursive = TRUE)
 
-dir.create(file.path(figures_dir, "expression_plots"),
-                     showWarnings = FALSE, recursive = TRUE)
+# Define colourblind-friendly palettes
+# Timepoints
+colourblind_timepoint <- c(
+    "02" = "#D55E00",
+    "12" = "#CC79A7",
+    "24" = "#0072B2",
+    "48" = "#F0E442",
+    "96" = "#009E73"
+)
+
+# Sex
+colourblind_sex <- c(
+    "Female" = "#E69F00",
+    "Male"   = "#56B4E9"
+)
 
 #===============================================================================
 # COUNT DATA PREPARATION
@@ -53,26 +66,14 @@ dir.create(file.path(figures_dir, "expression_plots"),
 # needs to be prepared accordingly.
 
 # Import featureCounts output
-count_data <- read.table(
-    file.path(working_dir, "6-quant", "counts.txt"),
-        # header set to TRUE to indicate first line is a header
-        header = TRUE,
-        # Columns tab separated
-        sep = "\t",
-        # Replace quotes with the escaped equivalent
-        quote = ""
-    )
-
-# Remove AAEL accession IDs when gene name present in Geneid column
-# Iterate over each row in Geneid column
-# TODO: Finish this
-#for(gene in 1:nrow(count_data[, 1])) {
-  #if (str_extract(count_data[, 1], "AAEL\\d+") == F) {
-    #test <- data.frame(
-        #geneid = c(if)
-    #)
-  #}, 
-#}
+count_data <- read.table(file.path(working_dir, "6-quant", "counts.txt"),
+    # header = TRUE to indicate first line is a header
+    header = TRUE,
+    # Columns tab separated
+    sep = "\t",
+    # Replace quotes with the escaped equivalent
+    quote = ""
+)
 
 # Set gene IDs as row names, ready for DESeq2
 rownames(count_data) <- count_data[, 1]
@@ -94,8 +95,7 @@ colnames(count_data) <- str_extract(colnames(count_data), "SRR\\d+")
 # useful insights from the count data.
 
 # Import the ENA metadata file mapping SRR accession IDs to library names
-metadata <- vroom(
-    file.path(working_dir, "reference", "PRJNA659517.tsv"))
+metadata <- vroom(file.path(working_dir, "reference", "PRJNA659517.tsv"))
 
 # Parse sample information from the library name encoding and define explicitly:
 #   Position 1     = sex (F/M)
@@ -175,65 +175,28 @@ genes_of_interest <- c(
     "Gr3",    # CO2 receptor subunit
     
     # Volatile/olfactory co-receptors
-    "Orco",   # Obligate odorant co-receptor (DeGennaro et al. 2013; Larsson 2004)
-    "Ir8a",   # Detects acidic volatiles incl. lactic acid (Raji et al. 2019)
-    "Ir25a",  # Highly conserved co-receptor (Abuin et al. 2011)
-    "Ir76b",  # Co-receptor (Ye et al. 2022; Goldman et al. 2025)
+    "Orco",   # Obligate odorant co-receptor
+    "Ir8a",   # Acidic volatile detection gating co-receptor
+    "Ir25a",  # Amine detection gating co-receptor
+    "Ir76b",  # Amine detection gating co-receptor
     
     # VOC receptors
-    "Ir21a",  # Hill et al. 2021
-    "Ir41a",  # Herre et al. 2022
-    "Ir41c",  # Raji et al. 2023
-    "Ir41j",  # Hill et al. 2021
-    "Ir75d",  # Hill et al. 2021
-    "Ir75g",  # Herre et al. 2022
-    "Ir75l",  # Raji et al. 2023; Hill et al. 2021
-    "Ir100a", # Herre et al. 2022
-    "Ir101",  # Hill et al. 2021
-    "Ir161",  # Herre et al. 2022
-    "Or2",    # Goldman et al. 2025; Xiong et al. 2025
-    "Or4",    # Tallon et al. 2019
-    "Or8",    # Recognises (R)-1-octen-3-ol (Bohbot & Dickens 2009)
-    "Or10",   # Xiong et al. 2025
-    "Or11",   # Hill et al. 2021; Tallon et al. 2019; Xiong et al. 2025
-    "Or23",   # Tallon et al. 2019
-    "Or28",   # Tallon et al. 2019
-    "Or41",   # Tallon et al. 2019
-    "Or47",   # Tallon et al. 2019
-    "Or49",   # Herre et al. 2022
-    "Or52",   # Hill et al. 2021; Tallon et al. 2019
-    "Or57",   # Hill et al. 2021
-    "Or59",   # Tallon et al. 2019
-    "Or66",   # Tallon et al. 2019
-    "Or69",   # Tallon et al. 2019
-    "Or70",   # Tallon et al. 2019
-    "Or71",   # Herre et al. 2022; Tallon et al. 2019
-    "Or72",   # Hill et al. 2021
-    "Or81",   # Hill et al. 2021
-    "Or82",   # Goldman et al. 2025
-    "Or84",   # Tallon et al. 2019
-    "Or87",   # Tallon et al. 2019
-    "Or88",   # Tallon et al. 2019
-    "Or91",   # Tallon et al. 2019
-    "Or94",   # Tallon et al. 2019
-    "Or100",  # Tallon et al. 2019
-    "Or103",  # Tallon et al. 2019
-    "Or104",  # Tallon et al. 2019
-    "Or105",  # Hill et al. 2021; Tallon et al. 2019
-    "Or112",  # Tallon et al. 2019
-    "Or113"   # Tallon et al. 2019
+    "Ir41a",
+    "Ir41c",
+    "Ir75k",
+    "Or4",
+    "Or7",
+    "Or8",
+    "Or11",
+    "Or49",
+    "Or71"
 )
 
 # Define gene subsets
 hygroreceptors <- c("Ir93a", "Ir40a", "Ir68a")
 co2_receptors <- c("Gr1", "Gr2", "Gr3")
-coreceptors <- c("Orco", "Ir8a", "Ir25a", "Ir76b")
-voc_receptors <- c("Ir21a", "Ir41a", "Ir41c", "Ir41j", "Ir75d", "Ir75g", "Ir75l", 
-    "Ir100a", "Ir101", "Ir161", "Or2", "Or4", "Or8", "Or10", "Or11", "Or23", 
-    "Or28", "Or41", "Or47", "Or49", "Or52", "Or57", "Or59", "Or66", "Or69", 
-    "Or70", "Or71", "Or72", "Or81", "Or82", "Or84", "Or87", "Or88", "Or91", 
-    "Or94", "Or100", "Or103", "Or104", "Or105", "Or112", "Or113"
-)
+voc_receptors <- c("Orco", "Ir8a", "Ir25a", "Ir76b", "Ir41a", "Ir41c", "Ir75k", 
+                   "Or2", "Or4", "Or7", "Or8", "Or11", "Or49", "Or71")
 
 # Save counts of genes of interest to separate object
 goi_data <- genes_of_interest[genes_of_interest %in% rownames(count_data)]
