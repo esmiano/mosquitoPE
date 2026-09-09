@@ -73,15 +73,6 @@ pca_data_og <- plotPCA(
 # Calculate percentage variance
 percent_var_og <- round(100 * attr(pca_data_og, "percentVar"))
 
-# Define colourblind-friendly palettes
-colourblind_timepoint <- c(
-    "02" = "#D55E00",
-    "12" = "#CC79A7",
-    "24" = "#0072B2",
-    "48" = "#F0E442",
-    "96" = "#009E73")
-
-
 # PCA plot
 ggplot(pca_data_og, aes(x = PC1, y = PC2)) +
   
