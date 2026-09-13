@@ -27,9 +27,9 @@ library(ggrepel)      # Non-overlapping plot labels
 
 # Initialise DESeq object
 dds_og <- DESeqDataSetFromMatrix(
-    countData = counts_og,
-    colData = sample_info_og,
-    design = ~ 1  # Placeholder intercept design (overwritten below)
+  countData = counts_og,
+  colData = sample_info_og,
+  design = ~ 1  # Placeholder intercept design (overwritten below)
 )
 
 # Remove genes with low counts and update DESeq object
