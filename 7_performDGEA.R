@@ -315,10 +315,6 @@ for (i in 1:length(all_contrasts)) {
 # EXPRESSION PLOTS
 #===============================================================================
 
-# Define and create output directory for expression plots
-expression_dir <- file.path(figures_dir, "expression_plots")
-dir.create(expression_dir, showWarnings = FALSE, recursive = TRUE)
-
 # Define position dodge
 dodge <- position_dodge(width=0.2)
 
