@@ -45,15 +45,12 @@ for trm in ${TRIM}/SRR*.fastq.gz; do
         samtools sort ${ALIGN}/${srr}.sam \
          -o ${ALIGN}/${srr}_sorted.bam
 
-        # Index used for some downstream tools
-        # TODO: Uncomment if needed
-		# samtools index ${ALIGN}/${srr}_sorted.bam
-
         # Remove original SAM file to save space
         rm ${ALIGN}/${srr}.sam
 
     fi
 
+    # Sample finished message
     echo "$(date) - Finished mapping ${srr}."
 
 done
