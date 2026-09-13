@@ -44,7 +44,7 @@ dir.create(figures_dir, showWarnings = FALSE, recursive = TRUE)
 timepoint_palette <- ltc(kiss)
 
 # Define sex colour palette
-ltc_sex <- c(
+sex_palette <- c(
     "Female" = "#EE6C4D",
     "Male"   = "#3D5A80"
 )
