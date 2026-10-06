@@ -29,6 +29,8 @@ samtools
 
 featureCounts
 
+gffutils
+
 
 ### R packages
 
