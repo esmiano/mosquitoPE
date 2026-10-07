@@ -28,17 +28,17 @@ Future version of the pipeline will be more configurable/adaptable to different 
 
 ### R packages
 
-[vroom](https://vroom.tidyverse.org/) and [tidyverse]() are required for fast importing of data and data handling, respectively. The tidyverse is a suite of packages that provide a number of quality of life improvements primarily utilising pipes and dataframes to make code easier to generate and comprehend.
+[vroom](https://vroom.tidyverse.org/) and [tidyverse](https://tidyverse.org/) are required for fast importing of data and data handling, respectively. The tidyverse is a suite of packages that provide a number of quality of life improvements when handling data, making code easier to write and comprehend.
 
-[ltc](), [RColorBrewer](), and [viridis]() are provide colour palettes, although the exact palettes used is a purely aesthetic choice and shouldn't affect the overall function of the pipeline if edited. [ggrepel]() makes labels easier to read on figures, of particular relevance to the Principal Component Analysis (PCA) plots in this analysis. [cowplot]() is required for plotting figures separately, so isn't integral to pipeline function but is required to produce ready to publish figures.
+[ltc](https://github.com/loukesio/ltc-color-palettes), [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html), and [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) are provide colour palettes, although the exact palettes used is a purely aesthetic choice and shouldn't affect the overall function of the pipeline if edited. [ggrepel](https://ggrepel.slowkow.com/) makes labels easier to read on figures, of particular relevance to the Principal Component Analysis (PCA) plots in this analysis. [cowplot](https://cran.r-project.org/web/packages/cowplot/index.html) is required here for plotting figures separately, so isn't integral to pipeline function but is required to produce ready to publish figures.
 
-[ggplot2](), [pheatmap](), and [enrichplot]() are required for plotting.
+[ggplot2](https://ggplot2.tidyverse.org/) (part of the tidyverse), [pheatmap](https://pheatmap.com/), and [enrichplot](https://bioconductor.org/packages//release/bioc/html/enrichplot.html) are required for plotting.
 
-[DESeq2]() performs the differential gene expression analysis, [WGCNA]() identifies co-expression modules along with [flashClust](https://cran.r-project.org/web/packages/flashClust/index.html), and [gprofiler2]() and [clusterProfiler]() functionally annotate co-expressed genes with GO enrichment.
+[DESeq2](https://bioconductor.org/packages//release/bioc/html/DESeq2.html) performs the differential gene expression analysis, [WGCNA](https://cran.r-project.org/web/packages/WGCNA/index.html) identifies co-expression modules along with [flashClust](https://cran.r-project.org/web/packages/flashClust/index.html), and [gprofiler2](https://cran.r-project.org/web/packages/gprofiler2/index.html) and [clusterProfiler](https://bioconductor.org/packages//release/bioc/html/clusterProfiler.html) functionally annotate co-expressed genes with GO enrichment.
 
-[PoiClaClu]() is required for Poisson similarity matrices (DESeq2 results QC) and [ashr]() was the algorithm used for shrinkage of those results (used when ranking genes as part of the Gene Set Enrichment Analysis).
+[PoiClaClu](https://cran.r-project.org/web/packages/PoiClaClu/index.html) is required for Poisson similarity matrices (DESeq2 results QC) and [ashr]([https://github.com/stephens999/ashr](https://cran.r-project.org/web/packages/ashr/index.html)) was the algorithm used for shrinkage of those results (used when ranking genes as part of the Gene Set Enrichment Analysis).
 
-[AnnotationHub](), [AnnotationDbi](), and [GO.db]() are required for GO term database handling and standardisation.
+[AnnotationHub](https://bioconductor.org/packages//release/bioc/html/AnnotationHub.html), [AnnotationDbi](https://bioconductor.org/packages//release/bioc/html/AnnotationDbi.html), and [GO.db](https://bioconductor.org/packages//release/data/annotation/html/GO.db.html) are required for GO term database handling and standardisation.
 
 ## Installation
 
@@ -59,7 +59,7 @@ featureCounts is part of the subread package, which can be installed from Source
 For R packages available through CRAN, please install them using the following command:
 
 ```R
-install.packages("tidyverse", "ggplot2", "pheatmap", "ashr", "flashClust", "gprofiler2")
+install.packages()
 ```
 
 For R packages from the Bioconductor ecosystem, first install Bioconductor:
@@ -72,7 +72,7 @@ if (!require("BiocManager", quietly = TRUE))
 Once Bioconductor is installed, run the following command:
 
 ```R
-BiocManager::install("DESeq2", "WGCNA", "AnnotationHub", "clusterProfiler", "enrichplot")
+BiocManager::install()
 ```
 
 ### Pipeline
