@@ -56,7 +56,7 @@ For HISAT2, download the binary from the project [website](https://daehwankimlab
 
 featureCounts is part of the subread package, which can be installed from SourceForge following the instructions [here](https://subread.sourceforge.net/subread-package.html).
 
-For R packages available through CRAN, please install them using the following command:
+For R packages available through CRAN, install them using the following command:
 
 ```R
 install.packages("tidyverse", "ltc", "RColorBrewer", "viridis", "ggrepel", "cowplot", "pheatmap", "WGCNA", "flashClust", "gprofiler2", "PoiClaClu", "ashr")
