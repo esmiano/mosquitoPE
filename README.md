@@ -30,7 +30,7 @@ Future version of the pipeline will be more configurable/adaptable to different 
 
 [vroom](https://vroom.tidyverse.org/) and [tidyverse](https://tidyverse.org/) are required for fast importing of data and data handling, respectively. The tidyverse is a suite of packages that provide a number of quality of life improvements when handling data, making code easier to write and comprehend.
 
-[ltc](https://github.com/loukesio/ltc-color-palettes), [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html), and [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) are provide colour palettes, although the exact palettes used is a purely aesthetic choice and shouldn't affect the overall function of the pipeline if edited. [ggrepel](https://ggrepel.slowkow.com/) makes labels easier to read on figures, of particular relevance to the Principal Component Analysis (PCA) plots in this analysis. [cowplot](https://cran.r-project.org/web/packages/cowplot/index.html) is required here for plotting figures separately, so isn't integral to pipeline function but is required to produce ready to publish figures.
+[ltc](https://github.com/loukesio/ltc-color-palettes), [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html), and [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) are provide colour palettes, although the exact palettes used is a purely aesthetic choice and shouldn't affect the overall function of the pipeline if edited. [ggrepel](https://ggrepel.slowkow.com/) makes labels easier to read on figures, of particular relevance to the Principal Component Analysis (PCA) plots in this analysis. [cowplot](https://github.com/wilkelab/cowplot) is required here for plotting figures separately, so isn't integral to pipeline function but is required to produce ready to publish figures.
 
 [ggplot2](https://ggplot2.tidyverse.org/) (part of the tidyverse), [pheatmap](https://pheatmap.com/), and [enrichplot](https://bioconductor.org/packages//release/bioc/html/enrichplot.html) are required for plotting.
 
@@ -59,7 +59,7 @@ featureCounts is part of the subread package, which can be installed from Source
 For R packages available through CRAN, please install them using the following command:
 
 ```R
-install.packages()
+install.packages("tidyverse", "ltc", "RColorBrewer", "viridis", "ggrepel", "cowplot", "pheatmap", "WGCNA", "flashClust", "gprofiler2", "PoiClaClu", "ashr")
 ```
 
 For R packages from the Bioconductor ecosystem, first install Bioconductor:
@@ -72,7 +72,7 @@ if (!require("BiocManager", quietly = TRUE))
 Once Bioconductor is installed, run the following command:
 
 ```R
-BiocManager::install()
+BiocManager::install("enrichplot", "DESeq2", "clusterProfiler", "AnnotationHub", "AnnotationDbi", "GO.db")
 ```
 
 ### Pipeline
