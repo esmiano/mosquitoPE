@@ -10,49 +10,35 @@ The project, as it is currently, has been built to identify DEGs within a set of
 
 Future version of the pipeline will be more configurable/adaptable to different datasets and usage cases.
 
-
 ## Dependencies
-
-More details to come here.
 
 ### Command-Line tools
 
-SRA tools
+[SRA toolkit](https://github.com/esmiano/mosquitoPE/edit/main/README.md): Retrieval of RNA-Seq reads from the NCBI Sequence Read Archive (SRA). SRA files are prefetched and then converted to FASTQ.
 
-FastQC
+[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/): Quality Control, assessing quality of sequencing reads.
 
-fastp
+[fastp](https://github.com/OpenGene/fastp): Trimming of low quality reads.
 
-hisat2
+[hisat2](https://github.com/esmiano/mosquitoPE/edit/main/README.md): Aligning sequencing reads to reference genome.
 
-samtools
+[samtools](https://www.htslib.org/): Converting FASTQ files to sorted BAM files
 
-featureCounts
-
-gffutils
-
+[featureCounts](https://subread.sourceforge.net/featureCounts.html): Quantifying how many reads map to each gene according to GTF annotation file.
 
 ### R packages
 
-tidyverse
+[vroom](https://vroom.tidyverse.org/) and [tidyverse]() are required for fast importing of data and data handling, respectively. The tidyverse is a suite of packages that provide a number of quality of life improvements primarily utilising pipes and dataframes to make code easier to generate and comprehend.
 
-DESeq2
+[ltc](), [RColorBrewer](), and [viridis]() are provide colour palettes, although the exact palettes used is a purely aesthetic choice and shouldn't affect the overall function of the pipeline if edited. [ggrepel]() makes labels easier to read on figures, of particular relevance to the Principal Component Analysis (PCA) plots in this analysis. [cowplot]() is required for plotting figures separately, so isn't integral to pipeline function but is required to produce ready to publish figures.
 
-WGCNA
+[ggplot2](), [pheatmap](), and [enrichplot]() are required for plotting.
 
-gprofiler2
+[DESeq2]() performs the differential gene expression analysis, [WGCNA]() identifies co-expression modules along with [flashClust](https://cran.r-project.org/web/packages/flashClust/index.html), and [gprofiler2]() and [clusterProfiler]() functionally annotate co-expressed genes with GO enrichment.
 
-AnnotationHub
+[PoiClaClu]() is required for Poisson similarity matrices (DESeq2 results QC) and [ashr]() was the algorithm used for shrinkage of those results (used when ranking genes as part of the Gene Set Enrichment Analysis).
 
-clusterProfiler
-
-ashr
-
-ggplot2
-
-pheatmap
-
-enrichplot
+[AnnotationHub](), [AnnotationDbi](), and [GO.db]() are required for GO term database handling and standardisation.
 
 ## Installation
 
@@ -73,10 +59,10 @@ featureCounts is part of the subread package, which can be installed from Source
 For R packages available through CRAN, please install them using the following command:
 
 ```R
-install.packages("tidyverse", "gprofiler2", "ashr", "ggplot2", "pheatmap")
+install.packages("tidyverse", "ggplot2", "pheatmap", "ashr", "flashClust", "gprofiler2")
 ```
 
-For packages from the Bioconductor ecosystem, first install Bioconductor:
+For R packages from the Bioconductor ecosystem, first install Bioconductor:
 
 ```R
 if (!require("BiocManager", quietly = TRUE))
