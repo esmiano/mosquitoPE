@@ -14,7 +14,7 @@ Future version of the pipeline will be more configurable/adaptable to different 
 
 ### Command-Line tools
 
-[SRA toolkit](https://github.com/esmiano/mosquitoPE/edit/main/README.md): Retrieval of RNA-Seq reads from the NCBI Sequence Read Archive (SRA). SRA files are prefetched and then converted to FASTQ.
+[SRA toolkit](https://github.com/ncbi/sra-tools): Retrieval of RNA-Seq reads from the NCBI Sequence Read Archive (SRA). SRA files are prefetched and then converted to FASTQ.
 
 [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/): Quality Control, assessing quality of sequencing reads.
 
