@@ -20,7 +20,7 @@ Future version of the pipeline will be more configurable/adaptable to different 
 
 [fastp](https://github.com/OpenGene/fastp): Trimming of low quality reads.
 
-[hisat2](https://github.com/esmiano/mosquitoPE/edit/main/README.md): Aligning sequencing reads to reference genome.
+[hisat2](https://daehwankimlab.github.io/hisat2/): Aligning sequencing reads to reference genome.
 
 [samtools](https://www.htslib.org/): Converting FASTQ files to sorted BAM files
 
